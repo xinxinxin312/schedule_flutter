@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:scheduling/database.dart';
 import 'package:scheduling/group.dart';
+
 import 'tab_view.dart';
 
 void main() async {
@@ -8,7 +10,7 @@ void main() async {
   const List<int> years = [2021, 2022, 2023, 2024];
 
   for (int year in years) {
-    for (Group group in groups) {
+    for (Group group in Database.groups) {
       int groupId = group.id;
       await Hive.openBox<String>("$year${groupId}subjectBox");
       await Hive.openBox<String>("$year${groupId}teacherBox");

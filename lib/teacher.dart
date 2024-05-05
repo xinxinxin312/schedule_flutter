@@ -24,7 +24,8 @@ enum Subject {
   pufangweichang,
   xiaoer,
   mrjieru,
-  xinzangfuchan
+  xinzangfuchan,
+  empty,
 }
 
 extension SubjectExtension on Subject {
@@ -70,6 +71,8 @@ extension SubjectExtension on Subject {
         return 'MR介入';
       case Subject.xinzangfuchan:
         return '心脏妇产';
+      case Subject.empty:
+        return '';
       default:
         return '';
     }

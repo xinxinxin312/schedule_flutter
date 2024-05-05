@@ -78,3 +78,12 @@ extension SubjectExtension on Subject {
     }
   }
 }
+
+Subject findSubject(String name) {
+  for (Subject subject in Subject.values) {
+    if (subject.chinese == name) {
+      return subject;
+    }
+  }
+  return Subject.empty;
+}

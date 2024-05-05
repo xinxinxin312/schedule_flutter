@@ -15,11 +15,12 @@ class MyDataTable extends StatefulWidget {
 }
 
 class MyDataTableState extends State<MyDataTable> {
-  int numOfRows = 12;
-  int numOfcols = 3;
+  final int numOfRows = 12;
+  final int numOfcols = 3;
 
   final List<List<String>> selectedItem = [];
-
+  late final List<DataColumn> cols;
+  late final List<DataRow> rows;
   @override
   void initState() {
     super.initState();
@@ -27,6 +28,7 @@ class MyDataTableState extends State<MyDataTable> {
       return List.generate(numOfcols, (index) => ""); // initialze all to ""
     });
     selectedItem.addAll(generatedList);
+   
   }
 
   @override
@@ -58,10 +60,18 @@ class MyDataTableState extends State<MyDataTable> {
       int colIndex = 1;
       cells.add(createDataCell(
           Subject.values.map((e) => e.chinese).toList(), rowIndex, colIndex));
+      print(
+          "selectedItem[rowIndex][colIndex]: ${selectedItem[rowIndex][colIndex]}");
 
       colIndex = 2;
+      print(
+          "selectedItem[rowIndex][colIndex]: ${selectedItem[rowIndex][colIndex]}");
       cells.add(createDataCell(
-          Database.teachers.map((e) => e.name.toString()).toList(),
+          Database.teachers
+              .where((teacher) => teacher.subjects
+                  .contains(findSubject(selectedItem[rowIndex][1])))
+              .map((e) => e.name.toString())
+              .toList(),
           rowIndex,
           colIndex));
 
@@ -72,12 +82,24 @@ class MyDataTableState extends State<MyDataTable> {
   }
 
   DataCell createDataCell(List<String> optionList, rowIndex, colIndex) {
+    if (optionList.isEmpty) {
+      optionList.add("");
+    }
+    optionList.toSet().toList();
+
+    if (!optionList.contains(selectedItem[rowIndex][colIndex])){
+      selectedItem[rowIndex][colIndex] = "";
+    }
     return DataCell(
       DropdownButton<String>(
-        value: selectedItem[rowIndex][colIndex],
+        value: selectedItem[rowIndex][colIndex].isNotEmpty
+            ? selectedItem[rowIndex][colIndex]
+            : "",
         onChanged: (String? newValue) {
           setState(() {
             selectedItem[rowIndex][colIndex] = newValue ?? "";
+            print(
+                "update cell value: row$rowIndex col$colIndex = ${selectedItem[rowIndex][colIndex]}");
           });
         },
         items: optionList.map<DropdownMenuItem<String>>((String value) {

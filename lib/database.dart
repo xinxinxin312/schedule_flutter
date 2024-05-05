@@ -14,11 +14,26 @@ class Database {
   ];
 
   static List<Teacher> teachers = [
-    const Teacher("", []),
-    const Teacher("樊琪", [Subject.belly, Subject.heart]),
-    const Teacher("赵连蒙", [Subject.xinzangfuchan, Subject.pufangweichang]),
-    const Teacher("谢丹", [Subject.emergency, Subject.puwai]),
-    const Teacher("张禄桐", [Subject.fangshe, Subject.fubujieru]),
+    const Teacher("", Subject.values),
+    const Teacher("范洁", [Subject.xueguan, Subject.heart]),
+    const Teacher("施群", [Subject.fuchan, Subject.heart]),
+    const Teacher("郑桂霞", [Subject.fuchan, Subject.heart, Subject.jidong]),
+    const Teacher("樊琪", [Subject.fuchan, Subject.heart, Subject.belly, Subject.xiaoer]),
+    const Teacher("赵连蒙", [Subject.xinzangfuchan, Subject.pufangweichang, Subject.qianbiao]),
+    const Teacher("谢丹", [Subject.qianbiao, Subject.belly]),
+    const Teacher("张禄桐", [Subject.heart, Subject.xueguan, Subject.qianbiao]),
+    const Teacher("秦悦洋", [Subject.belly, Subject.heart]),
+    const Teacher("刘霞", [Subject.belly, Subject.heart]),
+    const Teacher("李娜", [Subject.qianbiao, Subject.heart]),
+    const Teacher("张丹丹", [
+      Subject.xueguan,
+      Subject.xiaoer,
+      Subject.qianbiao,
+      Subject.fuchan,
+      Subject.xinzangfuchan
+    ]),
+    const Teacher("姜晓龙",
+        [Subject.jidong, Subject.jieru, Subject.belly, Subject.fubujieru]),
   ];
 
   static List<Group> groups = [
@@ -30,7 +45,7 @@ class Database {
     Group(2022, 3, ["张媛媛", "于世秀"]),
     Group(2022, 4, ["夏昕", "徐欢"]),
     Group(2023, 1, ["马琳", "魏依卓"]),
-    Group(2023, 2, ["王献", ""]),
+    Group(2023, 2, ["王献", "王朗润"]),
     Group(2023, 3, ["赵凯月", "张远洋"]),
     Group(2023, 4, ["王朗润"]),
   ];

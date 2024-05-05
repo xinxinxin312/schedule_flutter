@@ -37,9 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.6
   google_fonts: ^6.2.1
   pluto_grid: ^8.0.0
-  hive: any
+  hive: ^2.2.3
   hive_flutter: any
-
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

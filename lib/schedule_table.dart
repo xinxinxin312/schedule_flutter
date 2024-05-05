@@ -3,6 +3,9 @@ import 'package:pluto_grid/pluto_grid.dart';
 import 'package:scheduling/database.dart';
 import 'package:scheduling/teacher.dart';
 
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
 class PlutoGridExamplePage extends StatefulWidget {
   final String year;
   const PlutoGridExamplePage(this.year, {super.key});
@@ -12,6 +15,18 @@ class PlutoGridExamplePage extends StatefulWidget {
 }
 
 class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
+  final String subjectBoxName = "subjectBox";
+  late final Box<String> subjectBox;
+
+  final String teacherBoxName = "teacherBox";
+  late final Box<String> teacherBox;
+  @override
+  void initState() {
+    super.initState();
+    subjectBox = Hive.box(subjectBoxName);
+    teacherBox = Hive.box(teacherBoxName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,12 +37,23 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
         padding: const EdgeInsets.all(30),
         child: PlutoGrid(
             columns: columns,
-            rows: rows,
+            rows: createPlutoRows(),
             onChanged: (PlutoGridOnChangedEvent event) {
-              print(event);
+              // print(event);
+              // print("event.columnIdx: ${event.columnIdx}");
+              // print("event.rowIdx: ${event.rowIdx}");
+              // print("event.value.toString(): ${event.value.toString()}");
+
+              if (event.columnIdx == 1) {
+                subjectBox.put(event.rowIdx + 1, event.value.toString());
+              }
+
+              else if (event.columnIdx == 2) {
+                teacherBox.put(event.rowIdx + 1, event.value.toString());
+              }
             },
             onLoaded: (PlutoGridOnLoadedEvent event) {
-              print(event);
+              //print(event);
             }),
       ),
     );
@@ -36,135 +62,47 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
   List<PlutoColumn> columns = [
     /// Text Column definition
     PlutoColumn(
-      title: 'months',
-      field: 'text_field',
+      title: 'month',
+      field: 'month_field',
       type: PlutoColumnType.number(),
     ),
 
     /// Number Column definition
     PlutoColumn(
       title: '专业',
-      field: 'number_field',
-      type: PlutoColumnType.select(Subject.values.map((e) => e.chinese).toList()),
+      field: 'subject_field',
+      type:
+          PlutoColumnType.select(Subject.values.map((e) => e.chinese).toList()),
     ),
 
     /// Select Column definition
     PlutoColumn(
       title: '指导教师',
-      field: 'select_field',
+      field: 'teacher_field',
       type:
           PlutoColumnType.select(Database.teachers.map((e) => e.name).toList()),
     ),
   ];
 
-  List<PlutoRow> rows = [
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 1),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 2),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 3),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 4),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 5),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 6),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 7),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 8),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 9),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 10),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 11),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'text_field': PlutoCell(value: 12),
-        'number_field': PlutoCell(),
-        'select_field': PlutoCell(),
-        'date_field': PlutoCell(),
-        'time_field': PlutoCell(),
-      },
-    ),
-  ];
+  List<PlutoRow> createPlutoRows() {
+    List<int> months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    List<PlutoRow> rows = [];
+    for (int month in months) {
+      PlutoRow newRow = PlutoRow(
+        cells: {
+          'month_field': PlutoCell(value: month),
+          'subject_field': PlutoCell(
+              value: subjectBox.containsKey(month)
+                  ? subjectBox.get(month)
+                  : "null"),
+          'teacher_field': PlutoCell(
+              value: teacherBox.containsKey(month)
+                  ? teacherBox.get(month)
+                  : "null"),
+        },
+      );
+      rows.add(newRow);
+    }
+    return rows;
+  }
 }

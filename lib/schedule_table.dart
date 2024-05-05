@@ -1,28 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:scheduling/database.dart';
+import 'package:scheduling/group.dart';
 import 'package:scheduling/teacher.dart';
 
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class PlutoGridExamplePage extends StatefulWidget {
-  final String year;
-  const PlutoGridExamplePage(this.year, {super.key});
+  final Group group;
+  final int year;
+  const PlutoGridExamplePage(this.group, this.year, {super.key});
 
   @override
   State<PlutoGridExamplePage> createState() => _PlutoGridExamplePageState();
 }
 
 class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
-  final String subjectBoxName = "subjectBox";
+  late final Group group;
+  late final int groupNumber;
+  late final int groupId;
+  late final int year;
+
+  late final String subjectBoxName;
   late final Box<String> subjectBox;
 
-  final String teacherBoxName = "teacherBox";
+  late final String teacherBoxName;
   late final Box<String> teacherBox;
+
+  late PlutoGridStateManager stateManager;
   @override
   void initState() {
     super.initState();
+    group = widget.group;
+    groupNumber = group.groupNumber;
+    groupId = group.id;
+    year = widget.year;
+    initBoxs();
+  }
+
+  void initBoxs() {
+    subjectBoxName = "$year${groupId}subjectBox";
+    teacherBoxName = "$year${groupId}teacherBox";
+
     subjectBox = Hive.box(subjectBoxName);
     teacherBox = Hive.box(teacherBoxName);
   }
@@ -30,33 +50,37 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("${widget.year} 第一组"),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(30),
-        child: PlutoGrid(
-            columns: columns,
-            rows: createPlutoRows(),
-            onChanged: (PlutoGridOnChangedEvent event) {
-              // print(event);
-              // print("event.columnIdx: ${event.columnIdx}");
-              // print("event.rowIdx: ${event.rowIdx}");
-              // print("event.value.toString(): ${event.value.toString()}");
+        appBar: AppBar(
+          title: Text("$year年 第${group.startYear}/$groupNumber组"),
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(30),
+          child: PlutoGrid(
+              columns: columns,
+              rows: createPlutoRows(),
+              onChanged: (PlutoGridOnChangedEvent event) {
+                // print(event);
+                // print("event.columnIdx: ${event.columnIdx}");
+                // print("event.rowIdx: ${event.rowIdx}");
+                // print("event.value.toString(): ${event.value.toString()}");
 
-              if (event.columnIdx == 1) {
-                subjectBox.put(event.rowIdx + 1, event.value.toString());
-              }
+                if (event.columnIdx == 1) {
+                  subjectBox.put(event.rowIdx + 1, event.value.toString());
+                } else if (event.columnIdx == 2) {
+                  teacherBox.put(event.rowIdx + 1, event.value.toString());
+                }
+              },
+              onLoaded: (PlutoGridOnLoadedEvent event) {
+                //print(event);
+                stateManager = event.stateManager;
+              },
+              onSelected: (event) {
+                  print(event);
 
-              else if (event.columnIdx == 2) {
-                teacherBox.put(event.rowIdx + 1, event.value.toString());
-              }
-            },
-            onLoaded: (PlutoGridOnLoadedEvent event) {
-              //print(event);
-            }),
-      ),
-    );
+                  //TODO: filter the teachers that has the subject chosen in this row
+
+              },),
+        ));
   }
 
   List<PlutoColumn> columns = [
@@ -71,16 +95,17 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
     PlutoColumn(
       title: '专业',
       field: 'subject_field',
-      type:
-          PlutoColumnType.select(Subject.values.map((e) => e.chinese).toList()),
+      type: PlutoColumnType.select(
+          Subject.values.map((subject) => subject.chinese).toList()),
     ),
 
     /// Select Column definition
     PlutoColumn(
       title: '指导教师',
       field: 'teacher_field',
-      type:
-          PlutoColumnType.select(Database.teachers.map((e) => e.name).toList()),
+      type: PlutoColumnType.select(
+          Database.teachers.map((teacher) => teacher.name).toList(),
+          enableColumnFilter: true),
     ),
   ];
 

@@ -1,3 +1,4 @@
+import 'package:scheduling/group.dart';
 import 'package:scheduling/student.dart';
 import 'package:scheduling/teacher.dart';
 
@@ -14,8 +15,11 @@ class Database {
 
   static List<Teacher> teachers = [
     const Teacher("樊琪", [Subject.belly, Subject.heart]),
-    const Teacher("赵连蒙", [Subject.belly, Subject.heart]),
-    const Teacher("谢丹", [Subject.belly, Subject.heart]),
-    const Teacher("张禄桐", [Subject.belly, Subject.heart]),
+    const Teacher("赵连蒙", [Subject.xinzangfuchan, Subject.pufangweichang]),
+    const Teacher("谢丹", [Subject.emergency, Subject.puwai]),
+    const Teacher("张禄桐", [Subject.fangshe, Subject.fubujieru]),
+
   ];
+
+  static List<Group> groups = [];
 }

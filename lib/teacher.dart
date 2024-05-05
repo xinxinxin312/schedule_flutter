@@ -10,6 +10,21 @@ enum Subject {
   emergency,
   icu,
   digestion,
+  puwai,
+  fuchan,
+  qianbiao,
+  xueguan,
+  ct,
+  fangshe,
+  mr,
+  heyixue,
+  jieru,
+  jidong,
+  fubujieru,
+  pufangweichang,
+  xiaoer,
+  mrjieru,
+  xinzangfuchan
 }
 
 extension SubjectExtension on Subject {
@@ -23,7 +38,39 @@ extension SubjectExtension on Subject {
         return '急诊';
       case Subject.icu:
         return 'ICU';
-      default :
+      case Subject.digestion:
+        return '消化';
+      case Subject.puwai:
+        return '普外';
+      case Subject.fuchan:
+        return '妇产';
+      case Subject.qianbiao:
+        return '浅表';
+      case Subject.xueguan:
+        return '血管';
+      case Subject.ct:
+        return 'CT';
+      case Subject.fangshe:
+        return '放射';
+      case Subject.mr:
+        return 'MR';
+      case Subject.heyixue:
+        return '核医学';
+      case Subject.jieru:
+        return '介入';
+      case Subject.jidong:
+        return '机动';
+      case Subject.fubujieru:
+        return '腹部介入';
+      case Subject.pufangweichang:
+        return '普放胃肠';
+      case Subject.xiaoer:
+        return '小儿';
+      case Subject.mrjieru:
+        return 'MR介入';
+      case Subject.xinzangfuchan:
+        return '心脏妇产';
+      default:
         return '';
     }
   }

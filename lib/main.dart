@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:scheduling/group.dart';
 import 'tab_view.dart';
 
 void main() async {
- await Hive.initFlutter();
- await Hive.openBox<String>("subjectBox");
- await Hive.openBox<String>("teacherBox");
+  await Hive.initFlutter();
+  const List<int> years = [2021, 2022, 2023, 2024];
+
+  for (int year in years) {
+    for (Group group in groups) {
+      int groupId = group.id;
+      await Hive.openBox<String>("$year${groupId}subjectBox");
+      await Hive.openBox<String>("$year${groupId}teacherBox");
+    }
+  }
+
   runApp(const MyApp());
 }
 
@@ -64,5 +73,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-

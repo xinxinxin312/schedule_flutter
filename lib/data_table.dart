@@ -17,18 +17,29 @@ class MyDataTable extends StatefulWidget {
 class MyDataTableState extends State<MyDataTable> {
   final int numOfRows = 12;
   final int numOfcols = 3;
+  late final int year;
+  late final int groupId;
 
-  final List<List<String>> selectedItem = [];
-  late final List<DataColumn> cols;
-  late final List<DataRow> rows;
+  late final String subjectBoxName;
+  late final Box<String> subjectBox;
+
+  late final String teacherBoxName;
+  late final Box<String> teacherBox;
+
   @override
   void initState() {
     super.initState();
-    List<List<String>> generatedList = List.generate(numOfRows, (index) {
-      return List.generate(numOfcols, (index) => ""); // initialze all to ""
-    });
-    selectedItem.addAll(generatedList);
-   
+    year = widget.year;
+    groupId = widget.group.id;
+    initBoxs();
+  }
+
+  void initBoxs() {
+    subjectBoxName = "$year${groupId}subjectBox";
+    teacherBoxName = "$year${groupId}teacherBox";
+
+    subjectBox = Hive.box(subjectBoxName);
+    teacherBox = Hive.box(teacherBoxName);
   }
 
   @override
@@ -60,21 +71,37 @@ class MyDataTableState extends State<MyDataTable> {
       int colIndex = 1;
       cells.add(createDataCell(
           Subject.values.map((e) => e.chinese).toList(), rowIndex, colIndex));
-      print(
-          "selectedItem[rowIndex][colIndex]: ${selectedItem[rowIndex][colIndex]}");
+      // print(
+      //     "selectedItem[rowIndex][colIndex]: ${selectedItem[rowIndex][colIndex]}");
 
       colIndex = 2;
-      print(
-          "selectedItem[rowIndex][colIndex]: ${selectedItem[rowIndex][colIndex]}");
-      cells.add(createDataCell(
-          Database.teachers
-              .where((teacher) => teacher.subjects
-                  .contains(findSubject(selectedItem[rowIndex][1])))
-              .map((e) => e.name.toString())
-              .toList(),
-          rowIndex,
-          colIndex));
 
+      List<String> filteredTeachers = Database.teachers
+          .where((teacher) => teacher.subjects.contains(findSubject(
+              (subjectBox.containsKey(month) ? subjectBox.get(month) : '')!)))
+          .map((e) => e.name.toString())
+          .toList();
+
+      // check availablility of the teacher
+      // one teacher can only exist in 1 row in all the tables of this year
+      List<String> removeList = [];
+
+      for (Group group in Database.groups) {
+        if (group.startYear <= year && group.id != groupId) {
+          String boxName = "$year${group.id}teacherBox";
+          for (String name in filteredTeachers) {
+            Box<String> box = Hive.box(boxName);
+            if (box.get(month) == name) {
+              // this teacher is assigned to a group in this month already
+              removeList.add(name);
+              print(
+                  "this teacher is assigned to a group in this month already");
+            }
+          }
+        }
+      }
+      filteredTeachers.removeWhere((element) => removeList.contains(element));
+      cells.add(createDataCell(filteredTeachers, rowIndex, colIndex));
       rows.add(DataRow(cells: cells));
     }
 
@@ -82,27 +109,39 @@ class MyDataTableState extends State<MyDataTable> {
   }
 
   DataCell createDataCell(List<String> optionList, rowIndex, colIndex) {
-    if (optionList.isEmpty) {
-      optionList.add("");
+   
+ Set<String> optionSet = optionList.toSet();
+    // if (!optionList.contains(selectedItem[rowIndex][colIndex])) {
+    //   selectedItem[rowIndex][colIndex] = "";
+    // }
+    String value;
+    int month = rowIndex + 1;
+    if (colIndex == 1) {
+      value = (subjectBox.containsKey(month) ? subjectBox.get(month) : "")!;
+    } else {
+      value = (teacherBox.containsKey(month) ? teacherBox.get(month) : "")!;
     }
-    optionList.toSet().toList();
-
-    if (!optionList.contains(selectedItem[rowIndex][colIndex])){
-      selectedItem[rowIndex][colIndex] = "";
+    if (!optionSet.contains(value)) {
+      value = "";
     }
+    optionSet.add("");
+    print("optionSet: $optionSet");
     return DataCell(
       DropdownButton<String>(
-        value: selectedItem[rowIndex][colIndex].isNotEmpty
-            ? selectedItem[rowIndex][colIndex]
-            : "",
+        value: value,
         onChanged: (String? newValue) {
           setState(() {
-            selectedItem[rowIndex][colIndex] = newValue ?? "";
-            print(
-                "update cell value: row$rowIndex col$colIndex = ${selectedItem[rowIndex][colIndex]}");
+            // selectedItem[rowIndex][colIndex] = newValue ?? "";
+            if (colIndex == 1 && newValue != null) {
+              subjectBox.put(rowIndex + 1, newValue);
+            } else if (colIndex == 2 && newValue != null) {
+              teacherBox.put(rowIndex + 1, newValue);
+            }
+            // print(
+            //     "update cell value: row$rowIndex col$colIndex = ${selectedItem[rowIndex][colIndex]}");
           });
         },
-        items: optionList.map<DropdownMenuItem<String>>((String value) {
+        items: optionSet.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),

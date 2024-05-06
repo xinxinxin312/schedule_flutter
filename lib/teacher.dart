@@ -1,7 +1,7 @@
 class Teacher {
   final String name;
   final List<Subject> subjects;
-  const Teacher(this.name, this.subjects);
+  Teacher(this.name, List<Subject> subjects) : subjects = List.from(subjects)..add(Subject.empty);
 }
 
 enum Subject {

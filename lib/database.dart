@@ -1,38 +1,40 @@
 import 'package:scheduling/group.dart';
-import 'package:scheduling/student.dart';
+// import 'package:scheduling/student.dart';
 import 'package:scheduling/teacher.dart';
 
 class Database {
-  static List<Student> students = [
-    const Student(2022, "李海宇", 1),
-    const Student(2022, "卢思源", 2),
-    const Student(2023, "马琳", 1),
-    const Student(2023, "魏依卓", 1),
-    const Student(2023, "王献", 2),
-    const Student(2023, "赵凯月", 3),
-    const Student(2023, "张远洋", 3)
-  ];
+  // static List<Student> students = [
+  //   const Student(2022, "李海宇", 1),
+  //   const Student(2022, "卢思源", 2),
+  //   const Student(2023, "马琳", 1),
+  //   const Student(2023, "魏依卓", 1),
+  //   const Student(2023, "王献", 2),
+  //   const Student(2023, "赵凯月", 3),
+  //   const Student(2023, "张远洋", 3)
+  // ];
 
   static List<Teacher> teachers = [
-    const Teacher("", Subject.values),
-    const Teacher("范洁", [Subject.xueguan, Subject.heart]),
-    const Teacher("施群", [Subject.fuchan, Subject.heart]),
-    const Teacher("郑桂霞", [Subject.fuchan, Subject.heart, Subject.jidong]),
-    const Teacher("樊琪", [Subject.fuchan, Subject.heart, Subject.belly, Subject.xiaoer]),
-    const Teacher("赵连蒙", [Subject.xinzangfuchan, Subject.pufangweichang, Subject.qianbiao]),
-    const Teacher("谢丹", [Subject.qianbiao, Subject.belly]),
-    const Teacher("张禄桐", [Subject.heart, Subject.xueguan, Subject.qianbiao]),
-    const Teacher("秦悦洋", [Subject.belly, Subject.heart]),
-    const Teacher("刘霞", [Subject.belly, Subject.heart]),
-    const Teacher("李娜", [Subject.qianbiao, Subject.heart]),
-    const Teacher("张丹丹", [
+    Teacher("", Subject.values),
+    Teacher("范洁", [Subject.xueguan, Subject.heart]),
+    Teacher("施群", [Subject.fuchan, Subject.heart]),
+    Teacher("郑桂霞", [Subject.fuchan, Subject.heart, Subject.jidong]),
+    Teacher(
+        "樊琪", [Subject.fuchan, Subject.heart, Subject.belly, Subject.xiaoer]),
+    Teacher("赵连蒙",
+        [Subject.xinzangfuchan, Subject.pufangweichang, Subject.qianbiao]),
+    Teacher("谢丹", [Subject.qianbiao, Subject.belly]),
+    Teacher("张禄桐", [Subject.heart, Subject.xueguan, Subject.qianbiao]),
+    Teacher("秦悦洋", [Subject.belly, Subject.heart]),
+    Teacher("刘霞", [Subject.belly, Subject.heart]),
+    Teacher("李娜", [Subject.qianbiao, Subject.heart]),
+    Teacher("张丹丹", [
       Subject.xueguan,
       Subject.xiaoer,
       Subject.qianbiao,
       Subject.fuchan,
       Subject.xinzangfuchan
     ]),
-    const Teacher("姜晓龙",
+    Teacher("姜晓龙",
         [Subject.jidong, Subject.jieru, Subject.belly, Subject.fubujieru]),
   ];
 

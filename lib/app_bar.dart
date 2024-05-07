@@ -8,20 +8,15 @@ class MyAppBar extends AppBar implements PreferredSizeWidget {
               icon: const Icon(
                   Icons.navigate_before), // come back from settings page
               onPressed: () {
-                // Navigation button pressed
-                // Implement your navigation logic here
-                //TODO
+                // TODO Navigation button pressed
               },
             ),
             IconButton(
               icon: const Icon(Icons.settings),
               onPressed: () {
-                // Settings button pressed
-                // Implement your settings logic here
-                //TODO
+                // TODO Settings button pressed
               },
             ),
-            // Modified export dropdown button
             const ExportPopupMenuButton(),
           ],
         );
@@ -43,11 +38,10 @@ class ExportPopupMenuButton extends StatelessWidget {
         ),
       ],
       onSelected: (String value) {
-        // Handle export actions
         if (value == 'export') {
-          // Implement export logic for single item
+          // TODO Implement export logic for single item
         } else if (value == 'export_all') {
-          // Implement export logic for all items
+          // TODO Implement export logic for all items
         }
       },
     );

@@ -1,19 +1,8 @@
 import 'package:scheduling/models/group.dart';
-// import 'package:scheduling/student.dart';
 import 'package:scheduling/models/teacher.dart';
 import 'package:scheduling/models/subject.dart';
 
 class Database {
-  // static List<Student> students = [
-  //   const Student(2022, "李海宇", 1),
-  //   const Student(2022, "卢思源", 2),
-  //   const Student(2023, "马琳", 1),
-  //   const Student(2023, "魏依卓", 1),
-  //   const Student(2023, "王献", 2),
-  //   const Student(2023, "赵凯月", 3),
-  //   const Student(2023, "张远洋", 3)
-  // ];
-
   static List<Teacher> teachers = [
     Teacher("", Subject.values),
     Teacher("范洁", [Subject.xueguan, Subject.heart]),

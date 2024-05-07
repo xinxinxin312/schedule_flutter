@@ -70,21 +70,21 @@ class MyDataTableState extends State<MyDataTable> {
       int rowIndex = month - 1;
       int colIndex = 1;
       cells.add(createDataCell(
-          Subject.values.map((e) => e.chinese).toList(), rowIndex, colIndex));
+          Subject.values.map((e) => e.chinese).toSet(), rowIndex, colIndex));
       // print(
       //     "selectedItem[rowIndex][colIndex]: ${selectedItem[rowIndex][colIndex]}");
 
       colIndex = 2;
 
-      List<String> filteredTeachers = Database.teachers
+      Set<String> filteredTeachers = Database.teachers
           .where((teacher) => teacher.subjects.contains(findSubject(
               (subjectBox.containsKey(month) ? subjectBox.get(month) : '')!)))
           .map((e) => e.name.toString())
-          .toList();
+          .toSet();
 
       // check availablility of the teacher
       // one teacher can only exist in 1 row in all the tables of this year
-      List<String> removeList = [];
+      Set<String> busyTeacherSet = {};
 
       for (Group group in Database.groups) {
         if (group.startYear <= year && group.id != groupId) {
@@ -93,14 +93,14 @@ class MyDataTableState extends State<MyDataTable> {
             Box<String> box = Hive.box(boxName);
             if (box.get(month) == name) {
               // this teacher is assigned to a group in this month already
-              removeList.add(name);
+              busyTeacherSet.add(name);
               print(
                   "this teacher is assigned to a group in this month already");
             }
           }
         }
       }
-      filteredTeachers.removeWhere((element) => removeList.contains(element));
+      filteredTeachers.removeAll(busyTeacherSet);
       cells.add(createDataCell(filteredTeachers, rowIndex, colIndex));
       rows.add(DataRow(cells: cells));
     }
@@ -108,9 +108,8 @@ class MyDataTableState extends State<MyDataTable> {
     return rows;
   }
 
-  DataCell createDataCell(List<String> optionList, rowIndex, colIndex) {
-   
- Set<String> optionSet = optionList.toSet();
+  DataCell createDataCell(Set<String> optionList, rowIndex, colIndex) {
+    Set<String> optionSet = optionList.toSet();
     // if (!optionList.contains(selectedItem[rowIndex][colIndex])) {
     //   selectedItem[rowIndex][colIndex] = "";
     // }

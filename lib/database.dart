@@ -1,6 +1,7 @@
-import 'package:scheduling/group.dart';
+import 'package:scheduling/models/group.dart';
 // import 'package:scheduling/student.dart';
-import 'package:scheduling/teacher.dart';
+import 'package:scheduling/models/teacher.dart';
+import 'package:scheduling/models/subject.dart';
 
 class Database {
   // static List<Student> students = [

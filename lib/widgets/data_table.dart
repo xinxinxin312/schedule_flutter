@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scheduling/database.dart';
-import 'package:scheduling/group.dart';
-import 'package:scheduling/teacher.dart';
+import 'package:scheduling/models/group.dart';
+import 'package:scheduling/models/subject.dart';
 
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -125,20 +125,17 @@ class MyDataTableState extends State<MyDataTable> {
       value = "";
     }
     optionSet.add("");
-    print("optionSet: $optionSet");
+    //print("optionSet: $optionSet");
     return DataCell(
       DropdownButton<String>(
         value: value,
         onChanged: (String? newValue) {
           setState(() {
-            // selectedItem[rowIndex][colIndex] = newValue ?? "";
             if (colIndex == 1 && newValue != null) {
               subjectBox.put(rowIndex + 1, newValue);
             } else if (colIndex == 2 && newValue != null) {
               teacherBox.put(rowIndex + 1, newValue);
             }
-            // print(
-            //     "update cell value: row$rowIndex col$colIndex = ${selectedItem[rowIndex][colIndex]}");
           });
         },
         items: optionSet.map<DropdownMenuItem<String>>((String value) {

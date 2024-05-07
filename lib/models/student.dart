@@ -3,6 +3,5 @@ class Student {
   final String name;
   final int groupNumber;
   const Student(this.startYear, this.name, this.groupNumber);
-
 }
 

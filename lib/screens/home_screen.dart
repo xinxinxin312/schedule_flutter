@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:scheduling/data_table.dart';
+import 'package:scheduling/app_bar.dart';
+import 'package:scheduling/widgets/data_table.dart';
 import 'package:scheduling/database.dart';
-import 'package:scheduling/group.dart';
-import 'package:scheduling/schedule_table.dart';
+import 'package:scheduling/models/group.dart';
 
-class TabByYear extends StatelessWidget {
-  const TabByYear({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
   final List<int> years = const [2021, 2022, 2023, 2024];
 
   @override
   Widget build(BuildContext context) {
-    //final List<PlutoGridExamplePage> pages = [];
-    final List<NestedTab1> subTabs = [];
+    final List<TabByStartYear> subTabs = [];
+    /// tabs by year
     final List<Tab> tabs = [];
 
     for (int year in years) {
       tabs.add(Tab(text: "$year "));
-      subTabs.add(NestedTab1(year));
+      subTabs.add(TabByStartYear(year));
     }
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-        appBar: AppBar(
+        appBar: MyAppBar(
           bottom: TabBar(
             tabs: tabs,
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
           ),
           title: const Text('超声科规培排班表'),
         ),
@@ -37,14 +39,14 @@ class TabByYear extends StatelessWidget {
 
 final List<Group> groups = Database.groups;
 
-class NestedTab1 extends StatelessWidget {
+class TabByStartYear extends StatelessWidget {
   final int year;
-  const NestedTab1(this.year, {super.key});
+  const TabByStartYear(this.year, {super.key});
 
   @override
   Widget build(BuildContext context) {
     final List<Tab> tabs = [];
-    final List<NestedTab2> subTabs = [];
+    final List<TabByGroup> subTabs = [];
     final List<int> uniqueStartYears =
         groups.map((group) => group.startYear).toSet().toList();
 
@@ -53,17 +55,24 @@ class NestedTab1 extends StatelessWidget {
         tabs.add(Tab(text: '入学年份 $startYear'));
         List<Group> filteredGroups =
             groups.where((group) => group.startYear == year).toList();
-        subTabs.add(NestedTab2(filteredGroups, year));
+        subTabs.add(TabByGroup(filteredGroups, year));
       }
     }
     return DefaultTabController(
       length: tabs.length, // Number of nested tabs
       child: Scaffold(
         appBar: AppBar(
-          //title: const Text('Nested Tab 1'),
-          bottom: TabBar(
-            tabs: tabs,
+          flexibleSpace: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TabBar(
+                tabs: tabs,
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+              ),
+            ],
           ),
+          backgroundColor: const Color.fromARGB(255, 31, 29, 29),
         ),
         body: TabBarView(
           children: subTabs,
@@ -73,10 +82,10 @@ class NestedTab1 extends StatelessWidget {
   }
 }
 
-class NestedTab2 extends StatelessWidget {
+class TabByGroup extends StatelessWidget {
   final List<Group> groups;
   final int year;
-  const NestedTab2(this.groups, this.year, {super.key});
+  const TabByGroup(this.groups, this.year, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -91,10 +100,17 @@ class NestedTab2 extends StatelessWidget {
         length: tabs.length, // Number of nested tabs
         child: Scaffold(
           appBar: AppBar(
-            // title: const Text('Nested Tab 1'),
-            bottom: TabBar(
-              tabs: tabs,
+            flexibleSpace: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TabBar(
+                  tabs: tabs,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
+                ),
+              ],
             ),
+            backgroundColor: const Color.fromARGB(255, 31, 30, 30),
           ),
           body: SingleChildScrollView(
             child: SizedBox(

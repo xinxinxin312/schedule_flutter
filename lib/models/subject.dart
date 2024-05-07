@@ -1,10 +1,4 @@
-class Teacher {
-  final String name;
-  final List<Subject> subjects;
-  Teacher(this.name, List<Subject> subjects) : subjects = List.from(subjects)..add(Subject.empty);
-}
-
-enum Subject {
+enum Subject { // TODO replace with id and name
   belly,
   heart,
   emergency,

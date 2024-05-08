@@ -2,11 +2,13 @@ import 'student.dart';
 
 class Group {
   final int startYear;
+  // TODO endYear // duration == 3 ??
+  // TODO startMonth // endMonth
   final int groupNumber;
   final List<Student> students;
   final List<String> studentNames;
   final int id;
-   Group(this.startYear, this.groupNumber, this.studentNames)
+  Group(this.startYear, this.groupNumber, this.studentNames)
       : id = startYear * 10 + groupNumber,
         students = createStudents(studentNames, startYear, groupNumber);
 }
@@ -20,5 +22,3 @@ List<Student> createStudents(
   }
   return students;
 }
-
-//TODO: group management -- add new groups

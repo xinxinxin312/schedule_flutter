@@ -2,6 +2,7 @@ import 'package:scheduling/models/group.dart';
 import 'package:scheduling/models/teacher.dart';
 import 'package:scheduling/models/subject.dart';
 
+// TODO replace with hive and settings
 class Database {
   static List<Teacher> teachers = [
     Teacher("", Subject.values),

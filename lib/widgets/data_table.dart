@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:scheduling/database.dart';
 import 'package:scheduling/models/group.dart';
@@ -94,8 +96,7 @@ class MyDataTableState extends State<MyDataTable> {
             if (box.get(month) == name) {
               // this teacher is assigned to a group in this month already
               busyTeacherSet.add(name);
-              print(
-                  "this teacher is assigned to a group in this month already");
+              log("this teacher is assigned to a group in this month already");
             }
           }
         }

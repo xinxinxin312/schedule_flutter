@@ -11,6 +11,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<TabByStartYear> subTabs = [];
+
     /// tabs by year
     final List<Tab> tabs = [];
 
@@ -21,13 +22,13 @@ class HomeScreen extends StatelessWidget {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-        appBar: MyAppBar(
+        appBar: CustomAppBar(
           bottom: TabBar(
             tabs: tabs,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
           ),
-          title: const Text('超声科规培排班表'),
+          title: '超声科规培排班表',
         ),
         body: TabBarView(
           children: subTabs,

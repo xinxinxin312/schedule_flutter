@@ -1,24 +1,21 @@
-import 'student.dart';
+import 'package:hive/hive.dart';
+import 'package:scheduling/consts/hive_consts.dart';
+part 'group.g.dart';
 
-class Group {
+@HiveType(typeId: groupTypeId)
+class Group extends HiveObject {
+  @HiveField(0)
   final int startYear;
-  // TODO endYear // duration == 3 ??
+  final int endYear; // duration is 3 years
   // TODO startMonth // endMonth
+  @HiveField(1)
   final int groupNumber;
-  final List<Student> students;
+  @HiveField(2)
   final List<String> studentNames;
+  @HiveField(3)
   final int id;
+
   Group(this.startYear, this.groupNumber, this.studentNames)
       : id = startYear * 10 + groupNumber,
-        students = createStudents(studentNames, startYear, groupNumber);
-}
-
-List<Student> createStudents(
-    List<String> studentNames, int startYear, int groupNumber) {
-  List<Student> students = [];
-
-  for (String name in studentNames) {
-    students.add(Student(startYear, name, groupNumber));
-  }
-  return students;
+        endYear = startYear + 3;
 }

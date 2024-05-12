@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:scheduling/app_bar.dart';
-import 'package:scheduling/widgets/data_table.dart';
-import 'package:scheduling/database.dart';
+import 'package:scheduling/consts/hive_consts.dart';
+import 'package:scheduling/widgets/schedule_data_table.dart';
 import 'package:scheduling/models/group.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-  final List<int> years = const [2021, 2022, 2023, 2024];
+  HomeScreen({super.key});
+  Box<List<int>> yearBox = Hive.box(yearBoxName);
 
   @override
   Widget build(BuildContext context) {
     final List<TabByStartYear> subTabs = [];
+    List<int> years = yearBox.get(yearsKey) ?? [];
 
     /// tabs by year
     final List<Tab> tabs = [];
@@ -38,7 +40,8 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-final List<Group> groups = Database.groups;
+final Box<Group> groupBox = Hive.box("groups");
+final List<Group> groups = groupBox.values.toList();
 
 class TabByStartYear extends StatelessWidget {
   final int year;

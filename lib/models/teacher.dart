@@ -1,7 +1,12 @@
-import 'package:scheduling/models/subject.dart';
+import 'package:hive/hive.dart';
+import 'package:scheduling/consts/hive_consts.dart';
 
-class Teacher {
+part 'teacher.g.dart';
+@HiveType(typeId: teacherTypeId)
+class Teacher extends HiveObject {
+   @HiveField(0)
   final String name;
-  final List<Subject> subjects;
-  Teacher(this.name, List<Subject> subjects) : subjects = List.from(subjects)..add(Subject.empty);
+   @HiveField(1)
+  final List<String> subjects;
+  Teacher(this.name, List<String> subjects) : subjects = List.from(subjects)..add("");
 }

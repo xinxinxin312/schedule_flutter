@@ -21,7 +21,7 @@ class SettingsScreen extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Settings'),
+          title: const Text('设置'),
           bottom: const TabBar(
             tabs: [
               Tab(text: '小组管理'),
@@ -30,11 +30,11 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             GroupsTabView(),
-            const TeachersTabView(),
-            const SubjectsTab(),
+            TeachersTabView(),
+            SubjectsTab(),
           ],
         ),
       ),

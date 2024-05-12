@@ -1,12 +1,13 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:scheduling/database.dart';
 import 'package:scheduling/models/group.dart';
-import 'package:scheduling/models/subject.dart';
 
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:scheduling/models/teacher.dart';
+
+import '../consts/hive_consts.dart';
 
 class MyDataTable extends StatefulWidget {
   final Group group;
@@ -24,9 +25,16 @@ class MyDataTableState extends State<MyDataTable> {
 
   late final String subjectBoxName;
   late final Box<String> subjectBox;
+  late final List<String> subjects;
 
-  late final String teacherBoxName;
-  late final Box<String> teacherBox;
+  late final String teacherNameBoxName;
+  late final Box<String> teacherNameBox;
+
+  late final List<Teacher> teachers;
+  late final Box<Teacher> teachersBox;
+
+  late final Box<Group> groupBox;
+  late final List<Group> groups;
 
   @override
   void initState() {
@@ -38,10 +46,16 @@ class MyDataTableState extends State<MyDataTable> {
 
   void initBoxs() {
     subjectBoxName = "$year${groupId}subjectBox";
-    teacherBoxName = "$year${groupId}teacherBox";
+    teacherNameBoxName = "$year${groupId}teacherBox";
 
     subjectBox = Hive.box(subjectBoxName);
-    teacherBox = Hive.box(teacherBoxName);
+    teacherNameBox = Hive.box(teacherNameBoxName);
+    groupBox = Hive.box(groupBoxName);
+    teachersBox = Hive.box(teachersBoxName);
+
+    subjects = subjectBox.values.toList();
+    teachers = teachersBox.values.toList();
+    groups = groupBox.values.toList();
   }
 
   @override
@@ -71,16 +85,15 @@ class MyDataTableState extends State<MyDataTable> {
       cells.add(DataCell(Text("$month")));
       int rowIndex = month - 1;
       int colIndex = 1;
-      cells.add(createDataCell(
-          Subject.values.map((e) => e.chinese).toSet(), rowIndex, colIndex));
+      cells.add(createDataCell(subjects.toSet(), rowIndex, colIndex));
       // print(
       //     "selectedItem[rowIndex][colIndex]: ${selectedItem[rowIndex][colIndex]}");
 
       colIndex = 2;
 
-      Set<String> filteredTeachers = Database.teachers
-          .where((teacher) => teacher.subjects.contains(findSubject(
-              (subjectBox.containsKey(month) ? subjectBox.get(month) : '')!)))
+      Set<String> filteredTeachers = teachers
+          .where((teacher) => teacher.subjects.contains(
+              (subjectBox.containsKey(month) ? subjectBox.get(month) : '')!))
           .map((e) => e.name.toString())
           .toSet();
 
@@ -88,7 +101,7 @@ class MyDataTableState extends State<MyDataTable> {
       // one teacher can only exist in 1 row in all the tables of this year
       Set<String> busyTeacherSet = {};
 
-      for (Group group in Database.groups) {
+      for (Group group in groups) {
         if (group.startYear <= year && group.id != groupId) {
           String boxName = "$year${group.id}teacherBox";
           for (String name in filteredTeachers) {
@@ -111,15 +124,14 @@ class MyDataTableState extends State<MyDataTable> {
 
   DataCell createDataCell(Set<String> optionList, rowIndex, colIndex) {
     Set<String> optionSet = optionList.toSet();
-    // if (!optionList.contains(selectedItem[rowIndex][colIndex])) {
-    //   selectedItem[rowIndex][colIndex] = "";
-    // }
+
     String value;
     int month = rowIndex + 1;
     if (colIndex == 1) {
       value = (subjectBox.containsKey(month) ? subjectBox.get(month) : "")!;
     } else {
-      value = (teacherBox.containsKey(month) ? teacherBox.get(month) : "")!;
+      value =
+          (teacherNameBox.containsKey(month) ? teacherNameBox.get(month) : "")!;
     }
     if (!optionSet.contains(value)) {
       value = "";
@@ -134,7 +146,7 @@ class MyDataTableState extends State<MyDataTable> {
             if (colIndex == 1 && newValue != null) {
               subjectBox.put(rowIndex + 1, newValue);
             } else if (colIndex == 2 && newValue != null) {
-              teacherBox.put(rowIndex + 1, newValue);
+              teacherNameBox.put(rowIndex + 1, newValue);
             }
           });
         },

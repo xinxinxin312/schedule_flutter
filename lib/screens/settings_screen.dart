@@ -1,12 +1,3 @@
-// TODO management and hive
-// add new students
-// add new groups
-// group displaying view
-// add new teachers
-// teacher displaying view
-// add new years
-//
-
 import 'package:flutter/material.dart';
 import '../widgets/group_tab_view.dart';
 import '../widgets/teachers_tab_view.dart';

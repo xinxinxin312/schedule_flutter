@@ -26,15 +26,13 @@ class GroupAdapter extends TypeAdapter<Group> {
   @override
   void write(BinaryWriter writer, Group obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.startYear)
       ..writeByte(1)
       ..write(obj.groupNumber)
       ..writeByte(2)
-      ..write(obj.studentNames)
-      ..writeByte(3)
-      ..write(obj.id);
+      ..write(obj.studentNames);
   }
 
   @override

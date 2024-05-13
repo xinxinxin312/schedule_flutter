@@ -21,7 +21,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.settings),
           onPressed: () {
-            // TODO Settings button pressed
             Navigator.push(
                 context,
                 MaterialPageRoute(

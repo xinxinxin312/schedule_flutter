@@ -19,7 +19,6 @@ class GroupsTabViewState extends State<GroupsTabView> {
   late final List<Group> groups;
   late final Box<List<int>> yearBox;
   late final List<int> years;
-
   late List<DataRow> _rows;
 
   @override
@@ -27,8 +26,6 @@ class GroupsTabViewState extends State<GroupsTabView> {
     super.initState();
     groupBox = Hive.box(groupBoxName);
     groups = groupBox.values.toList();
-    yearBox = Hive.box(yearBoxName);
-    years = yearBox.get(yearsKey) ?? [];
   }
 
   @override
@@ -111,7 +108,6 @@ class GroupsTabViewState extends State<GroupsTabView> {
         groups.removeAt(index);
       });
     }
-    groupBox.deleteAt(index);
   }
 
   void _addGroup() {
@@ -127,13 +123,10 @@ class GroupsTabViewState extends State<GroupsTabView> {
 
       if (mounted) {
         setState(() {
-          //TODO sort by start year and group number
           var newGroup = Group(startYear, groupNumber, [newStudent]);
+          // TODO check duplicates
           groups.add(newGroup);
-          groupBox.add(newGroup);
-          years.addAll([startYear, startYear + 1, startYear + 2]);
-          years.toSet().toList().sort();
-          yearBox.put(yearsKey, years);
+          groups.sort();
 
           _studentNameController.clear();
           _startYearController.clear();
@@ -146,6 +139,12 @@ class GroupsTabViewState extends State<GroupsTabView> {
   @override
   void dispose() {
     _studentNameController.dispose();
+    _saveGroups();
     super.dispose();
+  }
+
+  Future _saveGroups() async {
+    await groupBox.clear();
+    await groupBox.addAll(groups);
   }
 }

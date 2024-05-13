@@ -30,12 +30,12 @@ class SubjectsTabState extends State<SubjectsTab> {
               itemCount: subjects.length + 1,
               itemBuilder: (BuildContext context, int index) {
                 if (index < subjects.length) {
-                  return Container(
+                  return SizedBox(
                       width: 400,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Container(
+                          SizedBox(
                             width: 200,
                             child: Text(subjects[index]),
                           ),
@@ -50,12 +50,12 @@ class SubjectsTabState extends State<SubjectsTab> {
                         ],
                       ));
                 } else {
-                  return Container(
+                  return SizedBox(
                       width: 400,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Container(
+                          SizedBox(
                             width: 200,
                             child: TextField(
                               controller: subjectController,

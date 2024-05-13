@@ -7,26 +7,25 @@ import 'package:scheduling/screens/home_screen.dart';
 
 void main() async {
   await Hive.initFlutter();
-  //const List<int> years = [2021, 2022, 2023, 2024]; // TODO
 
   Hive.registerAdapter(GroupAdapter());
   Hive.registerAdapter(TeacherAdapter());
 
-  Box<List<int>> yearBox = await Hive.openBox(yearBoxName);//TODO get rid of this
-  List<int> years = yearBox.get(yearsKey) ?? []; 
-  Box<Group> groupBox = await Hive.openBox(groupBoxName);
+  Box<Group> groupBox = await Hive.openBox<Group>(groupBoxName);
   List<Group> groups = groupBox.values.toList();
-  Box<Teacher> teachers = await Hive.openBox(teachersBoxName);
-  Box<List<String>> subjects = await Hive.openBox(subjectBoxName);
+  Box<Teacher> teachers = await Hive.openBox<Teacher>(teachersBoxName);
+  Box<List<String>> subjects = await Hive.openBox<List<String>>(subjectBoxName);
 
-// TODO use the group.startyear and group.endyear instead of years
-  for (int year in years) { 
-    for (Group group in groups) {
-      int groupId = group.id;
-      await Hive.openBox<String>("$year${groupId}subjectBox");
-      await Hive.openBox<String>("$year${groupId}teacherBox");
-    }
-  }
+  /// {$year$groupid, map<month, [subject, teacher]>}
+  Box<Map<dynamic, dynamic>> schedules = await Hive.openBox<Map<dynamic, dynamic>>(scheduleBoxName);
+
+  // for (Group group in groups) {
+  //   for (int year = group.startYear; year <= group.endYear; year++) {
+  //     int groupId = group.id;
+  //     await Hive.openBox<String>("$year${groupId}subjectBox");
+  //     await Hive.openBox<String>("$year${groupId}teacherBox");
+  //   }
+  // }
   runApp(const MyApp());
 }
 
@@ -67,7 +66,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home:  HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }

@@ -4,7 +4,6 @@ const teacherTypeId = 2;
 
 const String subjectBoxName = 'subjects';
 const String subjectsBoxKey = 'subjects';
-const String groupBoxName = 'groups';
+const String groupBoxName = 'groupsbox';
 const String teachersBoxName = 'teachers';
-const String yearBoxName = 'years';
-const String yearsKey = 'years';
+const String scheduleBoxName = 'schedules';

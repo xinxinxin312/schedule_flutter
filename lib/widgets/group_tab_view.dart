@@ -5,13 +5,15 @@ import '../consts/hive_consts.dart';
 import '../models/group.dart';
 
 class GroupsTabView extends StatefulWidget {
-  const GroupsTabView({super.key}); // Sample groups
+  const GroupsTabView({super.key});
   @override
   GroupsTabViewState createState() => GroupsTabViewState();
 }
 
 class GroupsTabViewState extends State<GroupsTabView> {
-  final TextEditingController _studentNameController = TextEditingController();
+  final TextEditingController _studentNameController1 = TextEditingController();
+  final TextEditingController _studentNameController2 = TextEditingController();
+
   final TextEditingController _startYearController = TextEditingController();
   final TextEditingController _groupNumberController = TextEditingController();
 
@@ -31,20 +33,21 @@ class GroupsTabViewState extends State<GroupsTabView> {
   @override
   Widget build(BuildContext context) {
     _rows = _createRows();
-    return Column(
-      children: [
-        DataTable(
+    return SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: DataTable(
           columns: const [
-            DataColumn(label: Text('入学年份')), // Enrollment Year
-            DataColumn(label: Text('编号')), // ID
-            DataColumn(label: Text('学生')),
-            //TODO: add more columns if there are more students
+            DataColumn(
+                label: Text(
+              '入学年份',
+            )),
+            DataColumn(label: Text('编号')),
+            DataColumn(label: Text('学生1')),
+            DataColumn(label: Text('学生2')),
             DataColumn(label: Text("")),
           ],
           rows: _rows,
-        ),
-      ],
-    );
+        ));
   }
 
   List<DataRow> _createRows() {
@@ -53,15 +56,17 @@ class GroupsTabViewState extends State<GroupsTabView> {
     for (int i = 0; i < groups.length; i++) {
       Group group = groups[i];
       rows.add(DataRow(cells: [
-        DataCell(Text(group.startYear.toString())), // Sample enrollment year
-        DataCell(Text(group.groupNumber.toString())), // Sample ID
-        DataCell(Text(group.studentNames.toString())), // Sample student name
+        DataCell(Text(group.startYear.toString())),
+        DataCell(Text(group.groupNumber.toString())),
+        DataCell(Text(group.studentNames[0])),
+        DataCell(
+            Text(group.studentNames.length <= 1 ? "" : group.studentNames[1])),
         DataCell(IconButton(
           icon: const Icon(Icons.remove),
           onPressed: () {
-            setState(() {
-              _deleteRow(i);
-            });
+            if (mounted) {
+              setState(() => _deleteRow(i));
+            }
           },
         ))
       ]));
@@ -84,8 +89,14 @@ class GroupsTabViewState extends State<GroupsTabView> {
           ),
           DataCell(
             TextField(
-              controller: _studentNameController,
-              decoration: const InputDecoration(hintText: '学生'),
+              controller: _studentNameController1,
+              decoration: const InputDecoration(hintText: '学生1'),
+            ),
+          ),
+          DataCell(
+            TextField(
+              controller: _studentNameController2,
+              decoration: const InputDecoration(hintText: '学生2'),
             ),
           ),
           DataCell(
@@ -111,11 +122,14 @@ class GroupsTabViewState extends State<GroupsTabView> {
   }
 
   void _addGroup() {
-    String newStudent = _studentNameController.text.trim();
+    String newStudent1 = _studentNameController1.text.trim();
+    String newStudent2 = _studentNameController2.text.trim();
+    List<String> newStudents = [newStudent1, newStudent2];
+
     String startYearString = _startYearController.text.trim();
     String groupNumberString = _groupNumberController.text.trim();
 
-    if (newStudent.isNotEmpty &&
+    if (newStudent1.isNotEmpty &&
         startYearString.isNotEmpty &&
         groupNumberString.isNotEmpty) {
       int startYear = int.parse(startYearString);
@@ -123,12 +137,16 @@ class GroupsTabViewState extends State<GroupsTabView> {
 
       if (mounted) {
         setState(() {
-          var newGroup = Group(startYear, groupNumber, [newStudent]);
-          // TODO check duplicates
-          groups.add(newGroup);
-          groups.sort();
+          var newGroup = Group(startYear, groupNumber, newStudents);
+          if (groups.contains(newGroup)) {
+            callShowDialog("小组已存在, 不能添加重复小组");
+          } else {
+            groups.add(newGroup);
+            groups.sort();
+          }
 
-          _studentNameController.clear();
+          _studentNameController1.clear();
+          _studentNameController2.clear();
           _startYearController.clear();
           _groupNumberController.clear();
         });
@@ -138,7 +156,8 @@ class GroupsTabViewState extends State<GroupsTabView> {
 
   @override
   void dispose() {
-    _studentNameController.dispose();
+    _studentNameController1.dispose();
+    _studentNameController2.dispose();
     _saveGroups();
     super.dispose();
   }
@@ -146,5 +165,25 @@ class GroupsTabViewState extends State<GroupsTabView> {
   Future _saveGroups() async {
     await groupBox.clear();
     await groupBox.addAll(groups);
+  }
+
+  Future<dynamic> callShowDialog(String textMsg) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('提示'),
+          content: Text(textMsg),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('确定'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

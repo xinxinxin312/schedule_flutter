@@ -10,12 +10,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(title),
-      leading: IconButton(
-        icon: const Icon(Icons.navigate_before), // come back from settings page
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
       bottom: bottom,
       actions: [
         IconButton(

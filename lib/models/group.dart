@@ -7,7 +7,6 @@ part 'group.g.dart';
 class Group extends HiveObject implements Comparable<Group> {
   @HiveField(0)
   final int startYear;
-  // TODO startMonth // endMonth
   @HiveField(1)
   final int groupNumber;
   @HiveField(2)
@@ -35,4 +34,11 @@ class Group extends HiveObject implements Comparable<Group> {
     }
     return 0;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Group && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

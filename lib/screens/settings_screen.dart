@@ -16,16 +16,16 @@ class SettingsScreen extends StatelessWidget {
           bottom: const TabBar(
             tabs: [
               Tab(text: '小组管理'),
-              Tab(text: '指导教师管理'),
               Tab(text: '专业管理'),
+              Tab(text: '指导教师管理'),
             ],
           ),
         ),
         body: const TabBarView(
           children: [
             GroupsTabView(),
-            TeachersTabView(),
             SubjectsTab(),
+            TeachersTabView(),
           ],
         ),
       ),

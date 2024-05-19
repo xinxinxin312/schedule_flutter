@@ -53,39 +53,52 @@ class TeachersTabViewState extends State<TeachersTabView> {
   void _addTeacher() {
     String newTeacherName = _newTeacherController.text.trim();
     if (newTeacherName.isNotEmpty) {
-      setState(() {
-        teacherNames.add(newTeacherName);
-        teacherSubjectMap[newTeacherName] = _newTeacherSubjects;
-        List<String> teachableSubjects = [];
-        for (int i = 0; i < _newTeacherSubjects.length; i++) {
-          if (_newTeacherSubjects[i]) {
-            teachableSubjects.add(subjects[i]);
+      if (mounted) {
+        setState(() {
+          teacherNames.add(newTeacherName);
+          teacherSubjectMap[newTeacherName] = _newTeacherSubjects;
+          List<String> teachableSubjects = [];
+          for (int i = 0; i < _newTeacherSubjects.length; i++) {
+            if (_newTeacherSubjects[i]) {
+              teachableSubjects.add(subjects[i]);
+            }
           }
-        }
-        var newTeacher = Teacher(newTeacherName, teachableSubjects);
-        teachersBox.add(newTeacher);
+          var newTeacher = Teacher(newTeacherName, teachableSubjects);
+          teachersBox.add(newTeacher);
 
-        _newTeacherController.clear();
-        _newTeacherSubjects = List.generate(subjects.length, (_) => false);
-      });
+          _newTeacherController.clear();
+          _newTeacherSubjects = List.generate(subjects.length, (_) => false);
+        });
+      }
     }
   }
+
+  final ScrollController controllerVertical = ScrollController();
+  final ScrollController controllerHorizontal = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     _rows = _createRows();
-    return Column(
-      children: [
-        DataTable(
-          columns: [
-            const DataColumn(label: Text('指导教师姓名')),
-            for (String subject in subjects) DataColumn(label: Text(subject)),
-            const DataColumn(label: Text("")),
-          ],
-          rows: _rows,
-        ),
-      ],
-    );
+    return Scrollbar(
+        controller: controllerHorizontal,
+        child: SingleChildScrollView(
+            controller: controllerHorizontal,
+            scrollDirection: Axis.horizontal,
+            child: SingleChildScrollView(
+                controller: controllerVertical,
+                scrollDirection: Axis.vertical,
+                child: DataTable(
+                  sortAscending: false,
+                  columns: [
+                    const DataColumn(
+                        label: Expanded(child: Center(child: Text('指导教师')))),
+                    for (String subject in subjects)
+                      DataColumn(
+                          label: Expanded(child: Center(child: Text(subject)))),
+                    const DataColumn(label: Text("")),
+                  ],
+                  rows: _rows,
+                ))));
   }
 
   List<DataRow> _createRows() {
@@ -94,7 +107,8 @@ class TeachersTabViewState extends State<TeachersTabView> {
     for (int i = 0; i < teacherNames.length; i++) {
       String teacher = teacherNames[i];
       rows.add(DataRow(cells: [
-        DataCell(Text(teacher)),
+        DataCell(Center(child: Text(teacher))),
+
         // Sample enrollment year
         for (int i = 0; i < subjects.length; i++)
           DataCell(
@@ -102,19 +116,13 @@ class TeachersTabViewState extends State<TeachersTabView> {
               color: teacherSubjectMap[teacher]![i]
                   ? Colors.green
                   : Theme.of(context).scaffoldBackgroundColor,
-              child: const SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-              ),
             ),
           ),
         DataCell(IconButton(
           icon: const Icon(Icons.remove),
           onPressed: () {
             if (mounted) {
-              setState(() {
-                _deleteRow(i);
-              });
+              setState(() => _deleteRow(i));
             }
           },
         ))
@@ -127,22 +135,20 @@ class TeachersTabViewState extends State<TeachersTabView> {
           DataCell(
             TextField(
               controller: _newTeacherController,
-              decoration: const InputDecoration(hintText: '指导教师姓名'),
+              decoration: const InputDecoration(hintText: '添加指导教师'),
             ),
           ),
           for (int i = 0; i < subjects.length; i++)
-            DataCell(
-              Checkbox(
+            DataCell(Center(
+              child: Checkbox(
                 value: _newTeacherSubjects[i],
                 onChanged: (value) {
                   if (mounted) {
-                    setState(() {
-                      _newTeacherSubjects[i] = value!;
-                    });
+                    setState(() => _newTeacherSubjects[i] = value!);
                   }
                 },
               ),
-            ),
+            )),
           DataCell(
             IconButton(
               icon: const Icon(Icons.add),

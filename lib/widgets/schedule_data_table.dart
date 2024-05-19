@@ -68,12 +68,17 @@ class MyDataTableState extends State<MyDataTable> {
     subjects = subjectBox.get(subjectsBoxKey) ?? [];
   }
 
+  final ScrollController controllerVertical = ScrollController();
+  final ScrollController controllerHorizontal = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return DataTable(
-      columns: columns,
-      rows: createRows(),
-    );
+    return SingleChildScrollView(
+        controller: controllerVertical,
+        scrollDirection: Axis.vertical,
+        child: DataTable(
+          columns: columns,
+          rows: createRows(),
+        ));
   }
 
   @override
@@ -146,7 +151,7 @@ class MyDataTableState extends State<MyDataTable> {
     optionSet.add("");
     log("optionSet: $optionSet");
     log("selcted value: $value");
-    
+
     return DataCell(
       DropdownButton<String>(
         value: value,
